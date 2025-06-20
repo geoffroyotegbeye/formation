@@ -8,11 +8,11 @@ export const FeaturesSection: React.FC = () => {
       {/* Introduction Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto animate-in fade-in-0 slide-in-from-bottom-4 duration-700 delay-200">
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
                 Une opportunité unique de transformer ta vie
               </h2>
-            <div className="flex flex-col md:flex-row items-center gap-8 mb-16 animate-in fade-in-0 slide-in-from-bottom-4 duration-700 delay-200">
+            <div className="flex flex-col md:flex-row items-center gap-8 mb-16 ">
               <div className="md:w-1/3">
                 <img 
                   src={profileImage} 
