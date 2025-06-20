@@ -73,21 +73,27 @@ const ApplicationItem: React.FC<ApplicationItemProps> = ({ application, onStatus
 
   return (
     <>
-      <tr className="border-b border-gray-200 hover:bg-gray-50">
-        <td className="py-3 px-6">{application.full_name}</td>
-        <td className="py-3 px-6">{application.email}</td>
-        <td className="py-3 px-6">{application.whatsapp}</td>
-        <td className="py-3 px-6">{application.age}</td>
-        <td className="py-3 px-6">{application.city}</td>
-        <td className="py-3 px-6">{application.has_code_experience ? 'Oui' : 'Non'}</td>
-        <td className="py-3 px-6">
+      <tr className="hover:bg-gray-50">
+        <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">
+          <div className="flex items-center">
+            <div className="ml-2 md:ml-4">
+              <div className="text-xs md:text-sm font-medium text-gray-900">{application.full_name}</div>
+            </div>
+          </div>
+        </td>
+        <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
+          <div className="text-sm text-gray-900 truncate max-w-[150px] lg:max-w-none">{application.email}</div>
+        </td>
+        <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
+          <div className="text-sm text-gray-900">Formation générale</div>
+        </td>
+        <td className="hidden sm:table-cell px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">
           <span className={`px-2 py-1 rounded-full text-xs ${getStatusBadgeClass(application.status)}`}>
             {getStatusText(application.status)}
           </span>
         </td>
-        <td className="py-3 px-6">{new Date(application.created_at).toLocaleDateString('fr-FR')}</td>
-        <td className="py-3 px-6 text-center">
-          <div className="flex item-center justify-center">
+        <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-right text-sm font-medium">
+          <div className="flex item-center justify-end">
             {/* Bouton de prévisualisation */}
             <button 
               className="transform hover:text-blue-500 hover:scale-110 mr-3"

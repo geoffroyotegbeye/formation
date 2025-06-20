@@ -84,8 +84,7 @@ const ApplicationsList: React.FC = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredApplications.slice(indexOfFirstItem, indexOfLastItem);
   
-  // Changer de page
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  // Aucune fonction paginate nécessaire car nous utilisons setCurrentPage directement
 
   const getStatusBadgeClass = (status: string) => {
     switch(status) {
@@ -114,23 +113,33 @@ const ApplicationsList: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Liste des candidatures</h2>
-        <div className="flex space-x-2">
-          <input
-            type="text"
-            placeholder="Rechercher..."
-            className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+    <div className="bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="p-3 md:p-4 border-b border-gray-200 flex flex-col md:flex-row justify-between md:items-center space-y-3 md:space-y-0">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-800">Liste des candidatures</h2>
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+          <div className="relative w-full sm:w-auto">
+            <input
+              type="text"
+              placeholder="Rechercher..."
+              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <button
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                onClick={() => setSearchTerm('')}
+              >
+                <span className="material-icons text-sm">close</span>
+              </button>
+            )}
+          </div>
           <select
-            className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full sm:w-auto border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="all">Tous les statuts</option>
+            <option value="">Tous les statuts</option>
             <option value="pending">En attente</option>
             <option value="approved">Approuvé</option>
             <option value="rejected">Rejeté</option>
@@ -150,18 +159,24 @@ const ApplicationsList: React.FC = () => {
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                <th className="py-3 px-6 text-left">Nom</th>
-                <th className="py-3 px-6 text-left">Email</th>
-                <th className="py-3 px-6 text-left">WhatsApp</th>
-                <th className="py-3 px-6 text-left">Âge</th>
-                <th className="py-3 px-6 text-left">Ville</th>
-                <th className="py-3 px-6 text-left">Exp. Code</th>
-                <th className="py-3 px-6 text-left">Statut</th>
-                <th className="py-3 px-6 text-left">Date</th>
-                <th className="py-3 px-6 text-center">Actions</th>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Candidat
+                </th>
+                <th scope="col" className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Email
+                </th>
+                <th scope="col" className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Formation
+                </th>
+                <th scope="col" className="hidden sm:table-cell px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Statut
+                </th>
+                <th scope="col" className="px-3 md:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="text-gray-600 text-sm">
@@ -175,7 +190,7 @@ const ApplicationsList: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={9} className="py-6 text-center text-gray-500">
+                  <td colSpan={5} className="py-6 text-center text-gray-500">
                     Aucune candidature trouvée
                   </td>
                 </tr>
@@ -185,44 +200,42 @@ const ApplicationsList: React.FC = () => {
           
           {/* Pagination */}
           {filteredApplications.length > itemsPerPage && (
-            <div className="flex justify-center mt-6">
-              <nav>
-                <ul className="flex space-x-2">
-                  {/* Bouton précédent */}
-                  <li>
-                    <button
-                      onClick={() => paginate(Math.max(1, currentPage - 1))}
-                      disabled={currentPage === 1}
-                      className={`px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
-                    >
-                      &laquo;
-                    </button>
-                  </li>
+            <div className="px-3 md:px-6 py-3 md:py-4 border-t border-gray-200">
+              <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
+                <div className="text-xs md:text-sm text-gray-500 w-full md:w-auto text-center md:text-left">
+                  Affichage de {indexOfFirstItem + 1} à {Math.min(indexOfLastItem, filteredApplications.length)} sur {filteredApplications.length} candidatures
+                </div>
+                <div className="flex flex-wrap justify-center md:justify-end space-x-1 md:space-x-2 items-center w-full md:w-auto">
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`px-2 md:px-3 py-1 rounded-md text-xs md:text-sm ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                  >
+                    Précédent
+                  </button>
                   
-                  {/* Pages numérotées */}
-                  {Array.from({ length: Math.ceil(filteredApplications.length / itemsPerPage) }).map((_, index) => (
-                    <li key={index}>
+                  {/* Afficher les numéros de page avec responsive */}
+                  <div className="flex space-x-1 md:space-x-2">
+                    {Array.from({ length: Math.ceil(filteredApplications.length / itemsPerPage) }).map((_, index) => (
                       <button
-                        onClick={() => paginate(index + 1)}
-                        className={`px-3 py-1 rounded-md ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                        key={index}
+                        onClick={() => setCurrentPage(index + 1)}
+                        className={`px-2 md:px-3 py-1 rounded-md text-xs md:text-sm ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
                       >
                         {index + 1}
                       </button>
-                    </li>
-                  ))}
+                    ))}
+                  </div>
                   
-                  {/* Bouton suivant */}
-                  <li>
-                    <button
-                      onClick={() => paginate(Math.min(Math.ceil(filteredApplications.length / itemsPerPage), currentPage + 1))}
-                      disabled={currentPage === Math.ceil(filteredApplications.length / itemsPerPage)}
-                      className={`px-3 py-1 rounded-md ${currentPage === Math.ceil(filteredApplications.length / itemsPerPage) ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
-                    >
-                      &raquo;
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={indexOfLastItem >= filteredApplications.length}
+                    className={`px-2 md:px-3 py-1 rounded-md text-xs md:text-sm ${indexOfLastItem >= filteredApplications.length ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                  >
+                    Suivant
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>
