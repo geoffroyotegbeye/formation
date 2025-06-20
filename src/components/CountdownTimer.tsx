@@ -35,7 +35,7 @@ export const CountdownTimer: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-4 rounded-xl shadow-lg border border-red-500/30 animate-pulse">
+    <div className="bg-gradient-to-r from-slate-800 to-slate-700 text-white px-6 py-4 rounded-xl shadow-lg border border-slate-600/30">
       <div className="flex items-center justify-center gap-3 mb-2">
         <Zap className="w-5 h-5 text-yellow-300" />
         <span className="font-bold text-sm uppercase tracking-wide">Temps limité</span>
