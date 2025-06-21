@@ -7,6 +7,7 @@ from app.models.user import User
 from app.models.application import Application, ApplicationStatus
 from app.schemas.application import ApplicationCreate, ApplicationUpdate, ApplicationResponse
 from app.utils.model_helpers import prepare_mongodb_document, prepare_mongodb_documents
+from app.services.email_service import EmailService
 
 router = APIRouter(tags=["applications"])
 
@@ -69,6 +70,16 @@ async def create_application(application_in: ApplicationCreate):
         status=ApplicationStatus.PENDING
     )
     await application.create()
+    
+    # Envoyer un email de bienvenue au candidat
+    try:
+        await EmailService.send_welcome_email(
+            recipient_name=application_in.full_name,
+            recipient_email=application_in.email
+        )
+    except Exception as e:
+        # Log l'erreur mais ne pas faire échouer la requête
+        print(f"Erreur lors de l'envoi de l'email de bienvenue: {str(e)}")
     
     # Convertir le document MongoDB en dictionnaire avec l'ID converti en chaîne
     result = prepare_mongodb_document(application)
