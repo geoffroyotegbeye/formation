@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Toast } from './components/Toast';
-import { HeroSection, FeaturesSection, FormSection, Footer } from './components/sections';
+import { HeroSection, FeaturesSection, FormSection, Footer, TestimonialsSection } from './components/sections';
 import applicationService from './services/applicationService';
 
 interface FormData {
@@ -111,6 +111,9 @@ function App() {
         isSubmitting={isSubmitting}
         errorMessage={errorMessage}
       />
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
 
       {/* Footer */}
       <Footer />

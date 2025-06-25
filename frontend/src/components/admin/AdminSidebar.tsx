@@ -65,6 +65,20 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ closeSidebar }) => {
               </div>
             </NavLink>
           </li>
+          <li>
+            <NavLink 
+              to="/admin/testimonials" 
+              className={({ isActive }) => 
+                `block p-3 rounded-lg ${isActive ? 'bg-blue-600' : 'hover:bg-gray-800'}`
+              }
+              onClick={() => closeSidebar()}
+            >
+              <div className="flex items-center">
+                <span className="material-icons mr-3">rate_review</span>
+                <span>Témoignages</span>
+              </div>
+            </NavLink>
+          </li>
         </ul>
       </nav>
     </div>

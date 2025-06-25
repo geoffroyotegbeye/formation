@@ -10,7 +10,7 @@ export const FeaturesSection: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto animate-in fade-in-0 slide-in-from-bottom-4 duration-700 delay-200">
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
-                Une opportunité unique de transformer ta vie
+                De débutant à développeur professionnel en 6 mois
               </h2>
             <div className="flex flex-col md:flex-row items-center gap-8 mb-16 ">
               <div className="md:w-1/3">
@@ -50,22 +50,40 @@ export const FeaturesSection: React.FC = () => {
            <div className="text-center mb-12">
              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-full font-semibold mb-6">
                <Globe className="w-5 h-5" />
-               Programme Complet
+               Programme Intensif 2025
              </div>
-             <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-               Voici ce que tu vas apprendre
+             <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+               🎯 À la fin de ce programme, tu pourras :
              </h3>
+             <div className="grid md:grid-cols-2 gap-4 mb-8">
+               <div className="flex items-start gap-3 p-4 bg-green-50 rounded-lg border border-green-100">
+                 <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                 <span>Créer des sites et applications web professionnels</span>
+               </div>
+               <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                 <CheckCircle2 className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                 <span>Développer des API performantes et sécurisées</span>
+               </div>
+               <div className="flex items-start gap-3 p-4 bg-purple-50 rounded-lg border border-purple-100">
+                 <CheckCircle2 className="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0" />
+                 <span>Décrocher des missions en freelance ou en entreprise</span>
+               </div>
+               <div className="flex items-start gap-3 p-4 bg-orange-50 rounded-lg border border-orange-100">
+                 <CheckCircle2 className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                 <span>Obtenir des certifications internationales reconnues</span>
+               </div>
+             </div>
            </div>
 
            <div className="grid md:grid-cols-2 gap-8 mb-12">
              <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200">
                <div className="flex items-center gap-3 mb-4">
-                 <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
                    <span className="text-white font-bold text-lg">1</span>
                  </div>
                  <div>
-                   <h4 className="font-bold text-slate-900">Phase 1 - Gratuite</h4>
-                   <p className="text-green-700 font-semibold">2 mois - 0 FCFA</p>
+                   <h4 className="font-bold text-slate-900">🔰 Phase 1 – Décollage</h4>
+                   <p className="text-green-700 font-semibold">2 mois - 100% GRATUIT</p>
                  </div>
                </div>
                <ul className="space-y-2 text-slate-700">
@@ -86,12 +104,15 @@ export const FeaturesSection: React.FC = () => {
 
              <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl border border-orange-200">
                <div className="flex items-center gap-3 mb-4">
-                 <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+                 <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
                    <span className="text-white font-bold text-lg">2</span>
                  </div>
                  <div>
-                   <h4 className="font-bold text-slate-900">Phase 2 - Avancée</h4>
-                   <p className="text-orange-700 font-semibold">4 mois - 30 000 FCFA/mois</p>
+                   <h4 className="font-bold text-slate-900">🚀 Phase 2 – Propulsion</h4>
+                   <div className="flex flex-col sm:flex-row gap-2">
+                     <span className="text-orange-700 font-semibold">4 mois - 30 000 FCFA/mois</span>
+                     <span className="text-sm bg-orange-100 text-orange-800 px-2 py-0.5 rounded-full">ou 100 000 FCFA les 4 mois (-17%)</span>
+                   </div>
                  </div>
                </div>
                <ul className="space-y-2 text-slate-700">
@@ -114,13 +135,31 @@ export const FeaturesSection: React.FC = () => {
            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
              <div className="flex items-center gap-3 mb-4">
                <Award className="w-8 h-8 text-blue-500" />
-               <h4 className="font-bold text-slate-900 text-lg">Bonus : Certifications Internationales</h4>
+               <h4 className="font-bold text-slate-900 text-lg">🎓 Préparation aux Certifications Internationales</h4>
              </div>
-             <p className="text-slate-700">
-               À la fin du programme, tu auras la possibilité de passer des certifications 
-               reconnues mondialement chez <strong>FreeCodeCamp</strong> et <strong>Coursera</strong> 
-               (Frontend, Backend, Fullstack).
+             <p className="text-slate-700 mb-4">
+               Nous te préparerons activement à passer des certifications reconnues mondialement :
              </p>
+             <ul className="space-y-2 text-slate-700">
+               <li className="flex items-start gap-2">
+                 <CheckCircle2 className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                 <span><strong>FreeCodeCamp</strong> - Certification Développeur Frontend</span>
+               </li>
+               <li className="flex items-start gap-2">
+                 <CheckCircle2 className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                 <span><strong>Coursera</strong> - Spécialisation en Développement Web</span>
+               </li>
+               <li className="flex items-start gap-2">
+                 <CheckCircle2 className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                 <span>Accompagnement personnalisé pour les projets de certification</span>
+               </li>
+             </ul>
+             <div className="mt-4 p-4 bg-white rounded-lg border border-blue-100">
+               <p className="text-sm text-slate-600">
+                 💡 <strong>Garantie satisfaction</strong> : Si tu n'es pas satisfait des 7 premiers jours en Phase 2, 
+                 nous te remboursons intégralement ton paiement.
+               </p>
+             </div>
            </div>
          </div>
        </div>

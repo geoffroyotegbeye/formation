@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import App from './App';
-import { AdminLogin, Dashboard, Users, Applications } from './pages/admin';
+import { AdminLogin, Dashboard, Users, Applications, Testimonials } from './pages/admin';
 import { AdminLayout } from './components/admin';
 
 const AppRoutes: React.FC = () => {
@@ -19,6 +19,7 @@ const AppRoutes: React.FC = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="users" element={<Users />} />
         <Route path="applications" element={<Applications />} />
+        <Route path="testimonials" element={<Testimonials />} />
       </Route>
       
       {/* Route par défaut - redirection vers la page d'accueil */}
