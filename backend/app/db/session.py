@@ -4,6 +4,8 @@ from app.core.config import settings
 from app.models.user import User
 from app.models.application import Application
 from app.models.testimonial import Testimonial
+from app.models.quote import Quote
+from app.models.contact import Contact
 
 async def init_db():
     """Initialiser la connexion à la base de données MongoDB"""
@@ -16,7 +18,9 @@ async def init_db():
         document_models=[
             User,
             Application,
-            Testimonial
+            Testimonial,
+            Quote,
+            Contact
         ]
     )
     

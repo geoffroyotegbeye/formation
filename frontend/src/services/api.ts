@@ -1,44 +1,201 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+// Service API pour gérer les appels au backend avec authentification
+import { toast } from 'react-hot-toast';
+import Cookies from 'js-cookie';
 
-// Configuration de l'API
-const API_URL = 'http://localhost:8000/api/v1';
+// URL de base de l'API
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
-// Instance axios avec configuration de base
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Intercepteur pour ajouter le token d'authentification aux requêtes
-api.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
-    const token = localStorage.getItem('token');
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
+/**
+ * Classe pour gérer les appels API authentifiés
+ */
+class ApiService {
+  /**
+   * Effectue une requête GET authentifiée
+   * @param endpoint - Point de terminaison de l'API
+   * @returns Données de la réponse
+   */
+  static async get<T>(endpoint: string): Promise<T> {
+    const token = Cookies.get('admin_token');
+    
+    if (!token) {
+      throw new Error('Non authentifié');
     }
-    return config;
-  },
-  (error: AxiosError) => {
-    return Promise.reject(error);
-  }
-);
-
-// Intercepteur pour gérer les erreurs de réponse
-api.interceptors.response.use(
-  (response: AxiosResponse) => {
-    return response;
-  },
-  (error: AxiosError) => {
-    // Gérer les erreurs 401 (non autorisé) - rediriger vers la page de connexion
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/admin/login';
+    
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      // Si le token est expiré ou invalide (401)
+      if (response.status === 401) {
+        // Détecter si nous sommes en environnement de production (HTTPS) ou développement (HTTP)
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        // En développement, ne pas utiliser secure:true car nous sommes en HTTP
+        const cookieOptions = {
+          secure: !isLocalhost,
+          sameSite: 'lax' as 'lax'
+        };
+        
+        Cookies.remove('admin_token', cookieOptions);
+        Cookies.remove('admin_user', cookieOptions);
+        toast.error('Session expirée, veuillez vous reconnecter');
+        window.location.href = '/login';
+        throw new Error('Session expirée');
+      }
+      
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Une erreur est survenue');
     }
-    return Promise.reject(error);
+    
+    return await response.json();
   }
-);
+  
+  /**
+   * Effectue une requête POST authentifiée
+   * @param endpoint - Point de terminaison de l'API
+   * @param data - Données à envoyer
+   * @returns Données de la réponse
+   */
+  static async post<T>(endpoint: string, data: any): Promise<T> {
+    const token = Cookies.get('admin_token');
+    
+    if (!token) {
+      throw new Error('Non authentifié');
+    }
+    
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      // Si le token est expiré ou invalide (401)
+      if (response.status === 401) {
+        // Détecter si nous sommes en environnement de production (HTTPS) ou développement (HTTP)
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        // En développement, ne pas utiliser secure:true car nous sommes en HTTP
+        const cookieOptions = {
+          secure: !isLocalhost,
+          sameSite: 'lax' as 'lax'
+        };
+        
+        Cookies.remove('admin_token', cookieOptions);
+        Cookies.remove('admin_user', cookieOptions);
+        toast.error('Session expirée, veuillez vous reconnecter');
+        window.location.href = '/login';
+        throw new Error('Session expirée');
+      }
+      
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Une erreur est survenue');
+    }
+    
+    return await response.json();
+  }
+  
+  /**
+   * Effectue une requête PUT authentifiée
+   * @param endpoint - Point de terminaison de l'API
+   * @param data - Données à envoyer
+   * @returns Données de la réponse
+   */
+  static async put<T>(endpoint: string, data: any): Promise<T> {
+    const token = Cookies.get('admin_token');
+    
+    if (!token) {
+      throw new Error('Non authentifié');
+    }
+    
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      // Si le token est expiré ou invalide (401)
+      if (response.status === 401) {
+        // Détecter si nous sommes en environnement de production (HTTPS) ou développement (HTTP)
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        // En développement, ne pas utiliser secure:true car nous sommes en HTTP
+        const cookieOptions = {
+          secure: !isLocalhost,
+          sameSite: 'lax' as 'lax'
+        };
+        
+        Cookies.remove('admin_token', cookieOptions);
+        Cookies.remove('admin_user', cookieOptions);
+        toast.error('Session expirée, veuillez vous reconnecter');
+        window.location.href = '/login';
+        throw new Error('Session expirée');
+      }
+      
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Une erreur est survenue');
+    }
+    
+    return await response.json();
+  }
+  
+  /**
+   * Effectue une requête DELETE authentifiée
+   * @param endpoint - Point de terminaison de l'API
+   * @returns Données de la réponse
+   */
+  static async delete<T>(endpoint: string): Promise<T> {
+    const token = Cookies.get('admin_token');
+    
+    if (!token) {
+      throw new Error('Non authentifié');
+    }
+    
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      // Si le token est expiré ou invalide (401)   
+      if (response.status === 401) {
+        // Détecter si nous sommes en environnement de production (HTTPS) ou développement (HTTP)
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        // En développement, ne pas utiliser secure:true car nous sommes en HTTP
+        const cookieOptions = {
+          secure: !isLocalhost,
+          sameSite: 'lax' as 'lax'
+        };
+        
+        Cookies.remove('admin_token', cookieOptions);
+        Cookies.remove('admin_user', cookieOptions);
+        toast.error('Session expirée, veuillez vous reconnecter');
+        window.location.href = '/login';
+        throw new Error('Session expirée');
+      }
+      
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Une erreur est survenue');
+    }
+    
+    return await response.json();
+  }
+}
 
-export default api;
+export default ApiService;

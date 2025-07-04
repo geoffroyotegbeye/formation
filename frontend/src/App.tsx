@@ -1,123 +1,79 @@
-import React, { useState } from 'react';
-import { Toast } from './components/Toast';
-import { HeroSection, FeaturesSection, FormSection, Footer, TestimonialsSection } from './components/sections';
-import applicationService from './services/applicationService';
+// App.tsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { AnimatePresence } from 'framer-motion';
+import { AuthProvider } from './contexts/AuthContext';
+import Sidebar from './components/Sidebar';
+import AnimatedBackground from './components/AnimatedBackground';
+import PageWrapper from './components/PageWrapper';
+import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 
-interface FormData {
-  fullName: string;
-  email: string;
-  whatsapp: string;
-  age: string;
-  city: string;
-  hasCodeExperience: string;
-  hasComputer: string;
-  hasInternet: string;
-  motivation: string;
-  hoursPerWeek: string;
-  howDidYouKnow: string;
-}
+// Public pages
+import Home from './pages/Home';
+import About from './pages/About';
+import Services from './pages/Services';
+import Portfolio from './pages/Portfolio';
+import Bootcamp from './pages/Bootcamp';
+import Contact from './pages/Contact';
+import Login from './pages/Login';
+
+// Admin pages
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminCandidatures from './pages/admin/AdminCandidatures';
+import AdminMessages from './pages/admin/AdminMessages';
+import UserProfile from './pages/admin/UserProfile';
+import AdminQuotes from './pages/admin/AdminQuotes';
 
 function App() {
-  const [formData, setFormData] = useState<FormData>({
-    fullName: '',
-    email: '',
-    whatsapp: '',
-    age: '',
-    city: '',
-    hasCodeExperience: '',
-    hasComputer: '',
-    hasInternet: '',
-    motivation: '',
-    hoursPerWeek: '',
-    howDidYouKnow: ''
-  });
-
-  const [showToast, setShowToast] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setErrorMessage('');
-    
-    try {
-      // Convertir les données du formulaire au format attendu par l'API
-      const applicationData = {
-        full_name: formData.fullName,
-        email: formData.email,
-        whatsapp: formData.whatsapp,
-        age: formData.age,
-        city: formData.city,
-        has_code_experience: formData.hasCodeExperience === 'oui',
-        has_computer: formData.hasComputer === 'oui',
-        has_internet: formData.hasInternet === 'regulierement' || formData.hasInternet === 'parfois',
-        motivation: formData.motivation,
-        hours_per_week: formData.hoursPerWeek ? parseInt(formData.hoursPerWeek.replace('h', ''), 10) : 0,
-        how_did_you_know: formData.howDidYouKnow
-      };
-      
-      // Envoyer la candidature à l'API
-      await applicationService.create(applicationData);
-      
-      // Afficher le toast de succès
-      setShowToast(true);
-      
-      // Réinitialiser le formulaire
-      setFormData({
-        fullName: '',
-        email: '',
-        whatsapp: '',
-        age: '',
-        city: '',
-        hasCodeExperience: '',
-        hasComputer: '',
-        hasInternet: '',
-        motivation: '',
-        hoursPerWeek: '',
-        howDidYouKnow: ''
-      });
-    } catch (error: any) {
-      console.error('Erreur lors de la soumission de la candidature:', error);
-      setErrorMessage(error.response?.data?.detail || 'Une erreur est survenue lors de la soumission de votre candidature. Veuillez réessayer.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 font-mono">
-      <Toast 
-        message="Merci pour ta candidature ! Tu seras contacté bientôt."
-        isVisible={showToast}
-        onClose={() => setShowToast(false)}
-      />
-
-      {/* Hero Section */}
-      <HeroSection />
-
-      {/* Features Section */}
-      <FeaturesSection />
-
-      {/* Form Section */}
-      <FormSection 
-        formData={formData}
-        handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-        errorMessage={errorMessage}
-      />
-
-      {/* Testimonials Section */}
-      <TestimonialsSection />
-
-      {/* Footer */}
-      <Footer />
-    </div>
+    <AuthProvider>
+      <Router>
+        <ScrollToTop />
+        <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
+          <AnimatedBackground />
+          
+          <div className="relative z-10">
+            <Sidebar />
+            <main className="lg:ml-0 pb-20 lg:pb-0">
+              <AnimatePresence mode="wait">
+                <Routes>
+                  {/* Public routes */}
+                  <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+                  <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+                  <Route path="/services" element={<PageWrapper><Services /></PageWrapper>} />
+                  <Route path="/portfolio" element={<PageWrapper><Portfolio /></PageWrapper>} />
+                  <Route path="/bootcamp" element={<PageWrapper><Bootcamp /></PageWrapper>} />
+                  <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
+                  <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
+                  
+                  {/* Admin routes */}
+                  <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+                  <Route path="/admin/users" element={<ProtectedRoute requireAdmin={true}><AdminUsers /></ProtectedRoute>} />
+                  <Route path="/admin/candidatures" element={<ProtectedRoute requireAdmin={true}><AdminCandidatures /></ProtectedRoute>} />
+                  <Route path="/admin/quotes" element={<ProtectedRoute requireAdmin={true}><AdminQuotes /></ProtectedRoute>} />
+                  <Route path="/admin/messages" element={<ProtectedRoute requireAdmin={true}><AdminMessages /></ProtectedRoute>} />
+                  <Route path="/admin/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+                </Routes>
+              </AnimatePresence>
+            </main>
+          </div>
+          
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#1f2937',
+                color: '#fff',
+                border: '1px solid #374151',
+              },
+            }}
+          />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
