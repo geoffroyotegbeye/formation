@@ -1,6 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Download, MapPin, Calendar, Check, X, Code, Server, Database, Github, Box, Cloud, PenTool, Zap, FileJson, Layers, Cpu, Globe } from 'lucide-react';
+import ImageCarousel from '../components/ImageCarousel';
+
+// Images pour le carousel (utilisant des URLs d'images professionnelles)
+const teamImages = [
+  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&h=500&q=80',
+  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&h=500&q=80',
+  'https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&h=500&q=80',
+];
 
 const About: React.FC = () => {
   return (
@@ -23,8 +31,12 @@ const About: React.FC = () => {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="w-64 h-64 mx-auto lg:mx-0 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-full flex items-center justify-center"
               >
-                <div className="w-56 h-56 bg-gray-800 rounded-full flex items-center justify-center">
-                  <span className="text-6xl">👥</span>
+                <div className="w-56 h-56 bg-gray-800 rounded-full overflow-hidden">
+                  <ImageCarousel 
+                    images={teamImages} 
+                    interval={4000} 
+                    className="w-full h-full"
+                  />
                 </div>
               </motion.div>
             </div>
