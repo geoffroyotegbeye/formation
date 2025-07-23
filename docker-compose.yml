@@ -62,7 +62,7 @@ services:
       - traefik-public
       - default
     depends_on:
-      db:
+      mongo:
         condition: service_healthy
         restart: true
       prestart:
