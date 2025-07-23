@@ -71,7 +71,6 @@ services:
       - .env.production
     environment:
       - DOMAIN=${DOMAIN_BACKEND}
-      - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
       - ENVIRONMENT=${ENVIRONMENT}
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
       - SECRET_KEY=${SECRET_KEY?Variable not set}
