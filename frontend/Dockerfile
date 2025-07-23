@@ -22,7 +22,7 @@ WORKDIR /app
 RUN npm install -g serve
 
 # Copy built React app from build stage
-COPY --from=build /app/build ./build
+COPY --from=build /app/dist ./build
 
 # Set environment variables
 ENV PORT=3000
