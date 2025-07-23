@@ -16,6 +16,7 @@ jobs:
       ENVIRONMENT: production
       DOMAIN: ${{ secrets.DOMAIN }}
       STACK_NAME: ${{ secrets.STACK_NAME }}
+      DOMAIN_BACKEND: ${{ secrets.DOMAIN_BACKEND }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       FIRST_SUPERUSER: ${{ secrets.FIRST_SUPERUSER }}
       FIRST_SUPERUSER_PASSWORD: ${{ secrets.FIRST_SUPERUSER_PASSWORD }}
