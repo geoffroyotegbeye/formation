@@ -1,0 +1,49 @@
+version: 2
+updates:
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: ⬆
+
+  # npm - Nuxt frontend
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: ⬆
+
+  # npm - Next backend
+  - package-ecosystem: npm
+    directory: /backend
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: ⬆
+
+  # Docker - Nuxt frontend
+  - package-ecosystem: docker
+    directory: /frontend
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ⬆
+
+  # Docker - Next backend
+  - package-ecosystem: docker
+    directory: /backend
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ⬆
+
+  # Docker Compose
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ⬆

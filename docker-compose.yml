@@ -1,0 +1,136 @@
+services:
+  # traefik:
+  #   image: traefik:3.0
+  #   command:
+  #     - --api.insecure=true
+  #     - --providers.docker
+  #     - --providers.docker.exposedbydefault=false
+  #     - --entrypoints.http.address=:80
+  #     - --entrypoints.https.address=:443
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   networks:
+  #     - traefik-public
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${DOMAIN}`)
+  #     - traefik.http.routers.traefik-dashboard.service=api@internal
+  #     - traefik.http.routers.traefik-dashboard.entrypoints=http,https
+  #     - traefik.http.routers.traefik-dashboard.tls=true
+  #     - traefik.http.routers.traefik-dashboard.tls.certresolver=le
+
+  frontend:
+    build:
+      context: ./frontend
+    image: frontend-akanni-solutions/nuxt:latest
+    restart: always
+    environment:
+      - NUXT_PUBLIC_API_URL=https://api.akanni.solutions
+      - VITE_API_URL=https://api.akanni.solutions
+      - APP_URL=https://akanni.solutions
+      - SERVER_URL=https://api.akanni.solutions
+    env_file:
+      - .env
+    networks:
+      - traefik-public
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.routers.${STACK_NAME}-frontend-http.rule=Host(`akanni.solutions`)
+      - traefik.http.routers.${STACK_NAME}-frontend-http.entrypoints=http
+      - traefik.http.routers.${STACK_NAME}-frontend-http.middlewares=https-redirect
+      - traefik.http.routers.${STACK_NAME}-frontend-https.rule=Host(`akanni.solutions`)
+      - traefik.http.routers.${STACK_NAME}-frontend-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME}-frontend-https.tls=true
+      - traefik.http.routers.${STACK_NAME}-frontend-https.tls.certresolver=le
+      - traefik.http.services.${STACK_NAME}-frontend.loadbalancer.server.port=3000
+
+  # ------------------------------
+  # Service MySQL (base de données)
+  # ------------------------------
+
+  # mysql:
+  #   image: mysql:8.4
+  #   container_name: mysql-fastresto
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}       # Défini dans ton .env
+  #     MYSQL_DATABASE: ${DB_DATABASE}                 # Nom de ta base principale
+  #     MYSQL_USER: ${DB_USERNAME}                         # Utilisateur custom
+  #     MYSQL_PASSWORD: ${DB_PASSWORD}                 # Mot de passe custom
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   networks:
+  #     - app-network
+
+  # -----------------------------------------------
+  # Service phpMyAdmin, accessible via Traefik HTTPS
+  # -----------------------------------------------
+  # phpmyadmin:
+  #   image: phpmyadmin:latest
+  #   container_name: phpmyadmin
+  #   restart: always
+  #   environment:
+  #     - PMA_HOST=mysql
+  #     - PMA_PORT=3306
+  #   networks:
+  #     - traefik-public
+  #     - app-network  # si ton mysql est dans app-network
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.docker.network=traefik-public"
+  #     - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.fast-resto.shop`)"
+  #     - "traefik.http.routers.phpmyadmin.entrypoints=https"
+  #     - "traefik.http.routers.phpmyadmin.tls=true"
+  #     - "traefik.http.routers.phpmyadmin.tls.certresolver=le"
+  #     - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+
+  # backend:
+  #   build:
+  #     context: ./backend
+  #   image: backend-akanni-solutions/next:latest
+  #   restart: always
+  #   environment:
+  #     - NODE_ENV=production
+  #     - ENVIRONMENT=production
+  #     - DOMAIN=${DOMAIN}
+  #     - DB_HOST=${DB_HOST}
+  #     - DB_PORT=${DB_PORT}
+  #     - DB_USERNAME=${DB_USERNAME}
+  #     - DB_PASSWORD=${DB_PASSWORD}
+  #     - DB_DATABASE=${DB_DATABASE}
+  #     - JWT_SECRET=${JWT_SECRET}
+  #     - JWT_EXPIRATION_TIME=${JWT_EXPIRATION_TIME}
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./backendfastresto/src/uploads:/app/dist/uploads
+  #     - ./backendfastresto/.env.production:/app/.env
+  #   networks:
+  #     - traefik-public
+  #     - app-network
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.docker.network=traefik-public
+  #     - traefik.constraint-label=traefik-public
+  #     - traefik.http.routers.${STACK_NAME}-api-http.rule=Host(`api.akanni.solutions`)
+  #     - traefik.http.routers.${STACK_NAME}-api-http.entrypoints=http
+  #     - traefik.http.routers.${STACK_NAME}-api-http.middlewares=https-redirect
+  #     - traefik.http.routers.${STACK_NAME}-api-https.rule=Host(`api.akanni.solutions`)
+  #     - traefik.http.routers.${STACK_NAME}-api-https.entrypoints=https
+  #     - traefik.http.routers.${STACK_NAME}-api-https.tls=true
+  #     - traefik.http.routers.${STACK_NAME}-api-https.tls.certresolver=le
+  #     - traefik.http.services.${STACK_NAME}-api.loadbalancer.server.port=3001
+
+networks:
+  traefik-public:
+    external: true
+  app-network:
+    driver: bridge
+
+# volumes:
+#   mysql_data:
