@@ -19,13 +19,18 @@ jobs:
       DOMAIN_BACKEND: ${{ secrets.DOMAIN_BACKEND }}
       DOCKER_IMAGE_BACKEND: ${{ secrets.DOCKER_IMAGE_BACKEND }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      BACKEND_CORS_ORIGINS: ${{ secrets.BACKEND_CORS_ORIGINS }}
+      MONGO_SERVER: ${{ secrets.MONGO_SERVER }}
+      MONGO_PORT: ${{ secrets.MONGO_PORT }}
+      MONGO_DB: ${{ secrets.MONGO_DB }}
+      MONGO_USER: ${{ secrets.MONGO_USER }}
+      MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
       FIRST_SUPERUSER: ${{ secrets.FIRST_SUPERUSER }}
       FIRST_SUPERUSER_PASSWORD: ${{ secrets.FIRST_SUPERUSER_PASSWORD }}
       SMTP_HOST: ${{ secrets.SMTP_HOST }}
       SMTP_USER: ${{ secrets.SMTP_USER }}
       SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
       EMAILS_FROM_EMAIL: ${{ secrets.EMAILS_FROM_EMAIL }}
-      MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
     steps:
       - name: Checkout

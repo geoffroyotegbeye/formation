@@ -17,6 +17,11 @@ jobs:
       DOMAIN: ${{ secrets.DOMAIN }}
       STACK_NAME: ${{ secrets.STACK_NAME }}
       DOMAIN_BACKEND: ${{ secrets.DOMAIN_BACKEND }}
+      BACKEND_CORS_ORIGINS: ${{ secrets.BACKEND_CORS_ORIGINS }}
+      MONGO_SERVER: ${{ secrets.MONGO_SERVER }}
+      MONGO_PORT: ${{ secrets.MONGO_PORT }}
+      MONGO_DB: ${{ secrets.MONGO_DB }}
+      MONGO_USER: ${{ secrets.MONGO_USER }}
       DOCKER_IMAGE_BACKEND: ${{ secrets.DOCKER_IMAGE_BACKEND }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       FIRST_SUPERUSER: ${{ secrets.FIRST_SUPERUSER }}
