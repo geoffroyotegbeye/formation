@@ -1,9 +1,8 @@
 # Build Stage 1
-
 FROM node:22-alpine AS build
 WORKDIR /app
 
-# Copy package.json and package-lock.json (npm)
+# Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
 
 # Install dependencies
@@ -15,13 +14,20 @@ COPY . ./
 # Build the project
 RUN npm run build
 
-# Build Stage 2
+# Production Stage 2
+FROM node:22-alpine
+WORKDIR /app
 
-# Build the application
-RUN npm run build
+# Install serve package globally
+RUN npm install -g serve
 
-# Expose port 3000 for the application
+# Copy built React app from build stage
+COPY --from=build /app/build ./build
+
+# Set environment variables
+ENV PORT=3000
+
 EXPOSE 3000
 
-# Start the application
-CMD [ "npm", "run", "start" ]
+# Serve the React app
+CMD ["serve", "-s", "build", "-l", "3000"]
