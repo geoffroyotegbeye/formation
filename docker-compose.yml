@@ -33,7 +33,7 @@ services:
       - APP_URL=https://akanni.solutions
       - SERVER_URL=https://api.akanni.solutions
     env_file:
-      - .env
+      - .env.production
     networks:
       - traefik-public
     labels:
