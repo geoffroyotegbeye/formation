@@ -1,0 +1,17 @@
+MONGODB_URL=mongodb://localhost:27017
+MONGODB_DB_NAME=formation_db
+SECRET_KEY=un_secret_tres_secret_a_changer_en_production
+
+DOMAIN_BACKEND=api.akanni.solutions
+DOMAIN_FRONTEND=akanni.solutions
+
+DOCKER_IMAGE_BACKEND=backend-akanni-solutions
+DOCKER_IMAGE_FRONTEND=frontend-akanni-solutions
+
+# Configuration Email
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=christyassinguezo@gmail.com
+SMTP_PASSWORD=oify ihsh mflh uuui
+EMAIL_SENDER=geoffroyotegbeye@gmail.com
+EMAIL_SENDER_NAME=Formation Coding
