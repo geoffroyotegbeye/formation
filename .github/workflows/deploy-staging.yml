@@ -5,6 +5,7 @@ on:
     branches:
       - main
 
+
 jobs:
   deploy:
     # Do not deploy in the main repository, only in user projects
