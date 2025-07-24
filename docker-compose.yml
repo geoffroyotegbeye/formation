@@ -70,6 +70,7 @@ services:
       - .env.production
     environment:
       - DOMAIN=${DOMAIN_BACKEND}
+      - STACK_NAME=${STACK_NAME}
       - MONGO_SERVER=${MONGO_SERVER}
       - MONGO_PORT=${MONGO_PORT}
       - MONGO_DB=${MONGO_DB}
