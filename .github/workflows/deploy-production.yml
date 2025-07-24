@@ -12,6 +12,8 @@ jobs:
     runs-on:
       - self-hosted
       - production
+    env_file:
+      - .env.production
     env:
       ENVIRONMENT: production
       DOMAIN: ${{ secrets.DOMAIN }}
