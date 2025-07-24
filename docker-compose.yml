@@ -128,8 +128,6 @@ services:
       - VITE_API_URL=https://api.akanni.solutions
       - APP_URL=https://akanni.solutions
       - SERVER_URL=https://api.akanni.solutions
-    env_file:
-      - .env.production
     networks:
       - traefik-public
     labels:

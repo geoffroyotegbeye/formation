@@ -10,7 +10,7 @@ from app.db.session import init_db
 from app.db.init_db import init_db_data
 
 # Charger les variables d'environnement depuis .env.production
-load_dotenv(".env.production")
+load_dotenv(".env")
 
 # Configurer le logging
 logging.basicConfig(level=logging.INFO)
