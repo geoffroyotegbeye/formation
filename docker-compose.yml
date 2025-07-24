@@ -65,9 +65,6 @@ services:
       mongo:
         condition: service_healthy
         restart: true
-
-    env_file:
-      - .env.production
     environment:
       - DOMAIN="api.akanni.solutions"
       - STACK_NAME="formation"
