@@ -75,7 +75,7 @@ services:
       - MONGO_USER="mongoadmin"
       - MONGO_PASSWORD="mongoadmin"
       - SMTP_SERVER="smtp.gmail.com"
-      - SMTP_PORT="587"
+      - SMTP_PORT=587
       - SMTP_USERNAME="christyassinguezo@gmail.com"
       - SMTP_PASSWORD="oify ihsh mflh uuui"
       - EMAIL_SENDER="geoffroyotegbeye@gmail.com"
