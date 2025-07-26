@@ -25,9 +25,9 @@ RUN npm install -g serve
 COPY --from=build /app/dist ./build
 
 # Set environment variables
-ENV PORT=3000
+ENV PORT=3002
 
-EXPOSE 3000
+EXPOSE 3002
 
 # Serve the React app
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["serve", "-s", "build", "-l", "3002"]
