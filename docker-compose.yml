@@ -65,30 +65,30 @@ services:
       #   condition: service_healthy
       #   restart: true
     environment:
-      - DOMAIN="api.akanni.solutions"
-      - STACK_NAME="formation"
-      - DOCKER_IMAGE_BACKEND="formation-backend" 
-      - DOCKER_IMAGE_FRONTEND="formation-frontend" 
-      - MONGO_SERVER="mongo"
-      - MONGO_PORT="27017"
-      - MONGO_DB="formation"
-      - MONGO_USER="mongoadmin"
-      - MONGO_PASSWORD="mongoadmin"
-      - SMTP_SERVER="smtp.gmail.com"
-      - SMTP_PORT=587
-      - SMTP_USERNAME="christyassinguezo@gmail.com"
-      - SMTP_PASSWORD="oify ihsh mflh uuui"
-      - EMAIL_SENDER="geoffroyotegbeye@gmail.com"
-      - EMAIL_SENDER_NAME="Formation Coding"
-      - FIRST_SUPERUSER="geoffroyotegbeye@gmail.com"
-      - FIRST_SUPERUSER_PASSWORD="formation"
-      - JWT_SECRET="formation"
-      - JWT_EXPIRATION_TIME="1d"
-      - ALGORITHM="HS256"
-      - ACCESS_TOKEN_EXPIRE_MINUTES="30"
-      - MONGODB_URL="mongodb://localhost:27017"
-      - MONGODB_DB_NAME="formation" 
-      - SECRET_KEY="un_secret_tres_secret_a_changer_en_production"
+      - DOMAIN=${DOMAIN}
+      - STACK_NAME=${STACK_NAME}
+      - DOCKER_IMAGE_BACKEND=${DOCKER_IMAGE_BACKEND}
+      - DOCKER_IMAGE_FRONTEND=${DOCKER_IMAGE_FRONTEND} 
+      - MONGO_SERVER=${MONGO_SERVER}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DB=${MONGO_DB}
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - EMAIL_SENDER=${EMAIL_SENDER}
+      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
+      - FIRST_SUPERUSER=${FIRST_SUPERUSER}
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION_TIME=${JWT_EXPIRATION_TIME}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - MONGODB_URL=${MONGODB_URL}
+      - MONGODB_DB_NAME=${MONGODB_DB_NAME} 
+      - SECRET_KEY=${SECRET_KEY}
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
