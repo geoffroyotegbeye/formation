@@ -37,6 +37,11 @@ services:
       - type: volume
         source: mongodb_data_volume
         target: /data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
         
   mongo-express:
     image: mongo-express
