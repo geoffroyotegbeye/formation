@@ -1,0 +1,242 @@
+services:
+  # traefik:
+  #   image: traefik:3.0
+  #   command:
+  #     - --api.insecure=true
+  #     - --providers.docker
+  #     - --providers.docker.exposedbydefault=false
+  #     - --entrypoints.http.address=:80
+  #     - --entrypoints.https.address=:443
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   networks:
+  #     - traefik-public
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${DOMAIN}`)
+  #     - traefik.http.routers.traefik-dashboard.service=api@internal
+  #     - traefik.http.routers.traefik-dashboard.entrypoints=http,https
+  #     - traefik.http.routers.traefik-dashboard.tls=true
+  #     - traefik.http.routers.traefik-dashboard.tls.certresolver=le
+
+  mongo:
+    image: mongo
+    restart: always
+    container_name: mongo-docker
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=mongoadmin
+      - MONGO_SERVER=${MONGO_SERVER}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DB=${MONGO_DB}
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      #MONGODB_AUTH_DATABASE: admin
+    ports:
+      - "27018:27017"
+    volumes:
+      - ./workspace:/workspace
+      - type: volume
+        source: mongodb_data_volume
+        target: /data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok'--quiet
+      interval: 30s
+      timeout: 10s
+      retries: 5
+        
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - "28081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: changeme
+      #ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: mongoadmin
+      ME_CONFIG_MONGODB_URL: mongo://mongoadmin:mongoadmin@mongo:27017/ 
+    depends_on:
+      - mongo
+
+  backend:
+    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    restart: always
+    networks:
+      - traefik-public
+    depends_on:
+      mongo:
+        condition: service_healthy
+        restart: true
+    environment:
+      - DOMAIN=${DOMAIN}
+      - STACK_NAME=${STACK_NAME}
+      - DOCKER_IMAGE_BACKEND=${DOCKER_IMAGE_BACKEND}
+      - DOCKER_IMAGE_FRONTEND=${DOCKER_IMAGE_FRONTEND} 
+      - MONGO_SERVER=${MONGO_SERVER}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DB=${MONGO_DB}
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - EMAIL_SENDER=${EMAIL_SENDER}
+      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
+      - FIRST_SUPERUSER=${FIRST_SUPERUSER}
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION_TIME=${JWT_EXPIRATION_TIME}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - MONGODB_URL=${MONGODB_URL}
+      - MONGODB_DB_NAME=${MONGODB_DB_NAME} 
+      - SECRET_KEY=${SECRET_KEY}
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    build:
+      context: ./backend
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+
+      - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=3002
+
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=Host(`api.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.entrypoints=http
+
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.rule=Host(`api.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls.certresolver=le
+
+      # Enable redirection for HTTP and HTTPS
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.middlewares=https-redirect
+
+
+  frontend:
+    build:
+      context: ./frontend
+    image: frontend-akanni-solutions/nuxt:latest
+    restart: always
+    environment:
+      - NUXT_PUBLIC_API_URL=https://api.akanni.solutions
+      - VITE_API_URL=https://api.akanni.solutions
+      - APP_URL=https://akanni.solutions
+      - SERVER_URL=https://api.akanni.solutions
+    networks:
+      - traefik-public
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.routers.${STACK_NAME}-frontend-http.rule=Host(`akanni.solutions`)
+      - traefik.http.routers.${STACK_NAME}-frontend-http.entrypoints=http
+      - traefik.http.routers.${STACK_NAME}-frontend-http.middlewares=https-redirect
+      - traefik.http.routers.${STACK_NAME}-frontend-https.rule=Host(`akanni.solutions`)
+      - traefik.http.routers.${STACK_NAME}-frontend-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME}-frontend-https.tls=true
+      - traefik.http.routers.${STACK_NAME}-frontend-https.tls.certresolver=le
+      - traefik.http.services.${STACK_NAME}-frontend.loadbalancer.server.port=3002
+
+  # ------------------------------
+  # Service MySQL (base de données)
+  # ------------------------------
+
+  # mysql:
+  #   image: mysql:8.4
+  #   container_name: mysql-fastresto
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}       # Défini dans ton .env
+  #     MYSQL_DATABASE: ${DB_DATABASE}                 # Nom de ta base principale
+  #     MYSQL_USER: ${DB_USERNAME}                         # Utilisateur custom
+  #     MYSQL_PASSWORD: ${DB_PASSWORD}                 # Mot de passe custom
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   networks:
+  #     - app-network
+
+  # -----------------------------------------------
+  # Service phpMyAdmin, accessible via Traefik HTTPS
+  # -----------------------------------------------
+  # phpmyadmin:
+  #   image: phpmyadmin:latest
+  #   container_name: phpmyadmin
+  #   restart: always
+  #   environment:
+  #     - PMA_HOST=mysql
+  #     - PMA_PORT=3306
+  #   networks:
+  #     - traefik-public
+  #     - app-network  # si ton mysql est dans app-network
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.docker.network=traefik-public"
+  #     - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.fast-resto.shop`)"
+  #     - "traefik.http.routers.phpmyadmin.entrypoints=https"
+  #     - "traefik.http.routers.phpmyadmin.tls=true"
+  #     - "traefik.http.routers.phpmyadmin.tls.certresolver=le"
+  #     - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+
+  # backend:
+  #   build:
+  #     context: ./backend
+  #   image: backend-akanni-solutions/next:latest
+  #   restart: always
+  #   environment:
+  #     - NODE_ENV=production
+  #     - ENVIRONMENT=production
+  #     - DOMAIN=${DOMAIN}
+  #     - DB_HOST=${DB_HOST}
+  #     - DB_PORT=${DB_PORT}
+  #     - DB_USERNAME=${DB_USERNAME}
+  #     - DB_PASSWORD=${DB_PASSWORD}
+  #     - DB_DATABASE=${DB_DATABASE}
+  #     - JWT_SECRET=${JWT_SECRET}
+  #     - JWT_EXPIRATION_TIME=${JWT_EXPIRATION_TIME}
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./backendfastresto/src/uploads:/app/dist/uploads
+  #     - ./backendfastresto/.env.production:/app/.env
+  #   networks:
+  #     - traefik-public
+  #     - app-network
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.docker.network=traefik-public
+  #     - traefik.constraint-label=traefik-public
+  #     - traefik.http.routers.${STACK_NAME}-api-http.rule=Host(`api.akanni.solutions`)
+  #     - traefik.http.routers.${STACK_NAME}-api-http.entrypoints=http
+  #     - traefik.http.routers.${STACK_NAME}-api-http.middlewares=https-redirect
+  #     - traefik.http.routers.${STACK_NAME}-api-https.rule=Host(`api.akanni.solutions`)
+  #     - traefik.http.routers.${STACK_NAME}-api-https.entrypoints=https
+  #     - traefik.http.routers.${STACK_NAME}-api-https.tls=true
+  #     - traefik.http.routers.${STACK_NAME}-api-https.tls.certresolver=le
+  #     - traefik.http.services.${STACK_NAME}-api.loadbalancer.server.port=3001
+
+networks:
+  traefik-public:
+    external: true
+  app-network:
+    driver: bridge
+
+# volumes:
+#   mysql_data:
+volumes:
+  mongodb_data_volume:
+    driver: local   
