@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     MONGODB_DB_NAME: str = os.getenv("MONGODB_DB_NAME", "formation_db")
 
     # CORS
-    BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:5173"]
+    BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:5173", "https://akanni.solutions"]
 
     # SMTP / email (optionnel, pour plus tard)
     SMTP_SERVER: str = os.getenv("SMTP_SERVER", "")
