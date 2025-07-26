@@ -14,4 +14,4 @@ COPY ./app /code/app
 COPY ./media /code/media
 
 
-CMD ["fastapi", "run", "main.py", "--port", "81"]
+CMD ["fastapi", "run", "main.py", "--port", "8004"]
