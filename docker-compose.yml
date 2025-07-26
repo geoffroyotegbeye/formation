@@ -1,141 +1,131 @@
-mongo:
-  image: mongo
-  restart: always
-  container_name: mongo-docker
-  environment:
-    - MONGO_INITDB_ROOT_USERNAME=mongoadmin
-    - MONGO_INITDB_ROOT_PASSWORD=mongoadmin
-    - MONGO_SERVER=${MONGO_SERVER}
-    - MONGO_PORT=${MONGO_PORT}
-    - MONGO_DB=${MONGO_DB}
-    - MONGO_USER=${MONGO_USER}
-    - MONGO_PASSWORD=${MONGO_PASSWORD}
-  ports:
-    - "27018:27017"
-  volumes:
-    - ./workspace:/workspace
-    - type: volume
-      source: mongodb_data_volume
-      target: /data/db
-  # CORRECTION: Ajouter les réseaux
-  networks:
-    - traefik-public
-    - default
-  # CORRECTION: Healthcheck correct
-  healthcheck:
-    test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-    interval: 30s
-    timeout: 10s
-    retries: 5
-    start_period: 30s
-      
-mongo-express:
-  image: mongo-express
-  container_name: mongo-express
-  restart: always
-  ports:
-    - "28081:8081"
-  environment:
-    ME_CONFIG_MONGODB_SERVER: mongo
-    ME_CONFIG_BASICAUTH_USERNAME: admin
-    ME_CONFIG_BASICAUTH_PASSWORD: changeme
-    ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
-    ME_CONFIG_MONGODB_ADMINPASSWORD: mongoadmin
-    ME_CONFIG_MONGODB_URL: mongo://mongoadmin:mongoadmin@mongo:27017/ 
-  # CORRECTION: Ajouter les réseaux
-  networks:
-    - traefik-public
-    - default
-  depends_on:
-    - mongo
+services:
+  mongo:
+    image: mongo
+    restart: always
+    container_name: mongo-docker
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=mongoadmin
+      - MONGO_SERVER=${MONGO_SERVER}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DB=${MONGO_DB}
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - "27018:27017"
+    volumes:
+      - ./workspace:/workspace
+      - type: volume
+        source: mongodb_data_volume
+        target: /data/db
+    networks:
+      - traefik-public
+      - default
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
-backend:
-  image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
-  restart: always
-  # CORRECTION: Ajouter default network
-  networks:
-    - traefik-public
-    - default
-  depends_on:
-    mongo:
-      condition: service_healthy
-      restart: true
-  environment:
-    - DOMAIN=${DOMAIN}
-    - STACK_NAME=${STACK_NAME}
-    - DOCKER_IMAGE_BACKEND=${DOCKER_IMAGE_BACKEND}
-    - DOCKER_IMAGE_FRONTEND=${DOCKER_IMAGE_FRONTEND} 
-    - MONGO_SERVER=${MONGO_SERVER}
-    - MONGO_PORT=${MONGO_PORT}
-    - MONGO_DB=${MONGO_DB}
-    - MONGO_USER=${MONGO_USER}
-    - MONGO_PASSWORD=${MONGO_PASSWORD}
-    - SMTP_SERVER=${SMTP_SERVER}
-    - SMTP_PORT=${SMTP_PORT}
-    - SMTP_USERNAME=${SMTP_USERNAME}
-    - SMTP_PASSWORD=${SMTP_PASSWORD}
-    - EMAIL_SENDER=${EMAIL_SENDER}
-    - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
-    - FIRST_SUPERUSER=${FIRST_SUPERUSER}
-    - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD}
-    - JWT_SECRET=${JWT_SECRET}
-    - JWT_EXPIRATION_TIME=${JWT_EXPIRATION_TIME}
-    - ALGORITHM=${ALGORITHM}
-    - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
-    - MONGODB_URL=${MONGODB_URL}
-    - MONGODB_DB_NAME=${MONGODB_DB_NAME} 
-    - SECRET_KEY=${SECRET_KEY}
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - "28081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: changeme
+      ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: mongoadmin
+      ME_CONFIG_MONGODB_URL: mongo://mongoadmin:mongoadmin@mongo:27017/
+    networks:
+      - traefik-public
+      - default
+    depends_on:
+      - mongo
 
-  healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
-    interval: 10s
-    timeout: 5s
-    retries: 5
+  backend:
+    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    restart: always
+    networks:
+      - traefik-public
+      - default
+    depends_on:
+      mongo:
+        condition: service_healthy
+        restart: true
+    environment:
+      - DOMAIN=${DOMAIN}
+      - STACK_NAME=${STACK_NAME}
+      - DOCKER_IMAGE_BACKEND=${DOCKER_IMAGE_BACKEND}
+      - DOCKER_IMAGE_FRONTEND=${DOCKER_IMAGE_FRONTEND}
+      - MONGO_SERVER=${MONGO_SERVER}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DB=${MONGO_DB}
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - EMAIL_SENDER=${EMAIL_SENDER}
+      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
+      - FIRST_SUPERUSER=${FIRST_SUPERUSER}
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION_TIME=${JWT_EXPIRATION_TIME}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - MONGODB_URL=${MONGODB_URL}
+      - MONGODB_DB_NAME=${MONGODB_DB_NAME}
+      - SECRET_KEY=${SECRET_KEY}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    build:
+      context: ./backend
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=8000
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=Host(`api.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.entrypoints=http
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.rule=Host(`api.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls.certresolver=le
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.middlewares=https-redirect
 
-  build:
-    context: ./backend
-  labels:
-    - traefik.enable=true
-    - traefik.docker.network=traefik-public
-    - traefik.constraint-label=traefik-public
-
-    # CORRECTION: Port FastAPI est 8000, pas 3002
-    - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=8000
-
-    - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=Host(`api.${DOMAIN?Variable not set}`)
-    - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.entrypoints=http
-
-    - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.rule=Host(`api.${DOMAIN?Variable not set}`)
-    - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.entrypoints=https
-    - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls=true
-    - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls.certresolver=le
-
-    - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.middlewares=https-redirect
-
-frontend:
-  build:
-    context: ./frontend
-  image: frontend-akanni-solutions/nuxt:latest
-  restart: always
-  environment:
-    - NUXT_PUBLIC_API_URL=https://api.akanni.solutions
-    - VITE_API_URL=https://api.akanni.solutions
-    - APP_URL=https://akanni.solutions
-    - SERVER_URL=https://api.akanni.solutions
-  networks:
-    - traefik-public
-  labels:
-    - traefik.enable=true
-    - traefik.docker.network=traefik-public
-    - traefik.constraint-label=traefik-public
-    - traefik.http.routers.${STACK_NAME}-frontend-http.rule=Host(`akanni.solutions`)
-    - traefik.http.routers.${STACK_NAME}-frontend-http.entrypoints=http
-    - traefik.http.routers.${STACK_NAME}-frontend-http.middlewares=https-redirect
-    - traefik.http.routers.${STACK_NAME}-frontend-https.rule=Host(`akanni.solutions`)
-    - traefik.http.routers.${STACK_NAME}-frontend-https.entrypoints=https
-    - traefik.http.routers.${STACK_NAME}-frontend-https.tls=true
-    - traefik.http.routers.${STACK_NAME}-frontend-https.tls.certresolver=le
-    - traefik.http.services.${STACK_NAME}-frontend.loadbalancer.server.port=3002
+  frontend:
+    build:
+      context: ./frontend
+    image: frontend-akanni-solutions/nuxt:latest
+    restart: always
+    environment:
+      - NUXT_PUBLIC_API_URL=https://api.akanni.solutions
+      - VITE_API_URL=https://api.akanni.solutions
+      - APP_URL=https://akanni.solutions
+      - SERVER_URL=https://api.akanni.solutions
+    networks:
+      - traefik-public
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.routers.${STACK_NAME}-frontend-http.rule=Host(`akanni.solutions`)
+      - traefik.http.routers.${STACK_NAME}-frontend-http.entrypoints=http
+      - traefik.http.routers.${STACK_NAME}-frontend-http.middlewares=https-redirect
+      - traefik.http.routers.${STACK_NAME}-frontend-https.rule=Host(`akanni.solutions`)
+      - traefik.http.routers.${STACK_NAME}-frontend-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME}-frontend-https.tls=true
+      - traefik.http.routers.${STACK_NAME}-frontend-https.tls.certresolver=le
+      - traefik.http.services.${STACK_NAME}-frontend.loadbalancer.server.port=3002
 
 networks:
   traefik-public:
