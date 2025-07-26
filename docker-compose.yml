@@ -22,21 +22,21 @@ services:
   #     - traefik.http.routers.traefik-dashboard.tls=true
   #     - traefik.http.routers.traefik-dashboard.tls.certresolver=le
 
-  # mongo:
-  #   image: mongo
-  #   restart: always
-  #   container_name: mongo-docker
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: mongoadmin
-  #     MONGO_INITDB_ROOT_PASSWORD: mongoadmin
-  #     #MONGODB_AUTH_DATABASE: admin
-  #   ports:
-  #     - "27017:27017"
-  #   volumes:
-  #     - ./workspace:/workspace
-  #     - type: volume
-  #       source: mongodb_data_volume
-  #       target: /data/db
+  mongo:
+    image: mongo
+    restart: always
+    container_name: mongo-docker
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: mongoadmin
+      #MONGODB_AUTH_DATABASE: admin
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./workspace:/workspace
+      - type: volume
+        source: mongodb_data_volume
+        target: /data/db
         
   # mongo-express:
   #   image: mongo-express
@@ -60,10 +60,10 @@ services:
     restart: always
     networks:
       - traefik-public
-    # depends_on:
-      # mongo:
-      #   condition: service_healthy
-      #   restart: true
+    depends_on:
+      mongo:
+        condition: service_healthy
+        restart: true
     environment:
       - DOMAIN=${DOMAIN}
       - STACK_NAME=${STACK_NAME}
