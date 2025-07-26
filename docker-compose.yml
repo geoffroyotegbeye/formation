@@ -27,8 +27,13 @@ services:
     restart: always
     container_name: mongo-docker
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongoadmin
-      MONGO_INITDB_ROOT_PASSWORD: mongoadmin
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=mongoadmin
+      - MONGO_SERVER=${MONGO_SERVER}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DB=${MONGO_DB}
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
       #MONGODB_AUTH_DATABASE: admin
     ports:
       - "27018:27017"
@@ -38,9 +43,9 @@ services:
         source: mongodb_data_volume
         target: /data/db
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
+      test: echo 'db.runCommand("ping").ok' | mongo mongodb://${MONGO_DB}:${MONGO_PASSWORD}@localhost:${MONGO_PORT}/?authSource=${MONGO_DB} --quiet
+      interval: 30s
+      timeout: 10s
       retries: 5
         
   mongo-express:
