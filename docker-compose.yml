@@ -61,10 +61,10 @@ services:
     networks:
       - traefik-public
       - default
-    depends_on:
-      mongo:
-        condition: service_healthy
-        restart: true
+    # depends_on:
+      # mongo:
+      #   condition: service_healthy
+      #   restart: true
     environment:
       - DOMAIN="api.akanni.solutions"
       - STACK_NAME="formation"
