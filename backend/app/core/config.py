@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 
 # Charger les variables depuis un fichier spécifique (.env.production)
-load_dotenv(dotenv_path=".env.production")
+load_dotenv(dotenv_path="../../../.env") 
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
