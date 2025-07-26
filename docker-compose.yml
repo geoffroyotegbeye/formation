@@ -60,7 +60,6 @@ services:
     restart: always
     networks:
       - traefik-public
-      - default
     # depends_on:
       # mongo:
       #   condition: service_healthy
