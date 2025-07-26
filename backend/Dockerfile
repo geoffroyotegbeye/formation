@@ -1,17 +1,15 @@
-FROM python:3.10
+FROM python:3.11
 
+WORKDIR /app
 
-WORKDIR /code
+# Copier les requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copier le code
+COPY . .
 
-COPY ./requirements.txt /code/requirements.txt
-
-
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
-
-
-COPY ./app /code/app
-COPY ./media /code/media
-
-
-CMD ["fastapi", "run", "main.py", "--port", "8004"]
+# Commande correcte pour FastAPI
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# OU
+# CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
