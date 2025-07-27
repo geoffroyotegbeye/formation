@@ -93,7 +93,6 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
       - traefik.constraint-label=traefik-public
-      - traefik.http.services.${STACK_NAME}-backend.loadbalancer.server.port=3002
       - traefik.http.routers.${STACK_NAME}-backend-http.rule=Host(`api.akanni.solutions`)
       - traefik.http.routers.${STACK_NAME}-backend-http.entrypoints=http
       - traefik.http.routers.${STACK_NAME}-backend-https.rule=Host(`api.akanni.solutions`)
