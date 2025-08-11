@@ -83,7 +83,7 @@ services:
       - MONGODB_DB_NAME=${MONGODB_DB_NAME}
       - SECRET_KEY=${SECRET_KEY}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3002/api/v1/utils/health-check/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -93,7 +93,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
       - traefik.constraint-label=traefik-public
-      - traefik.http.services.${STACK_NAME}-backend.loadbalancer.server.port=3002
+      - traefik.http.services.${STACK_NAME}-backend.loadbalancer.server.port=8000
       - traefik.http.routers.${STACK_NAME}-backend-http.rule=Host(`api.akanni.solutions`)
       - traefik.http.routers.${STACK_NAME}-backend-http.entrypoints=http
       - traefik.http.routers.${STACK_NAME}-backend-https.rule=Host(`api.akanni.solutions`)
