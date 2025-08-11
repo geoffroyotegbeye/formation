@@ -58,9 +58,9 @@ pip install fastapi uvicorn motor beanie pydantic pydantic-settings python-jose[
 uvicorn app.main:app --reload
 ```
 
-Le backend sera accessible à l'adresse: http://localhost:8000
+Le backend sera accessible à l'adresse: http://localhost:3003
 
-Documentation API: http://localhost:8000/docs
+Documentation API: http://localhost:3003/docs
 
 ### Frontend
 
