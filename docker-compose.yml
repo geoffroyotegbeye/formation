@@ -110,7 +110,7 @@ services:
     restart: always
     environment:
       - NUXT_PUBLIC_API_URL=https://api.akanni.solutions
-      - VITE_API_URL=https://api.akanni.solutions
+      - VITE_API_URL=https://api.akanni.solutions VITE_API_URL
       - APP_URL=https://akanni.solutions
       - SERVER_URL=https://api.akanni.solutions
     networks:
