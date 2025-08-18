@@ -54,7 +54,7 @@ class UserService {
    * @returns Utilisateur créé
    */
   static async createUser(userData: CreateUserRequest): Promise<User> {
-    return await ApiService.post<User>('/users', userData);
+    return await ApiService.post<User>('/users/', userData);
   }
 
   /**
@@ -64,7 +64,7 @@ class UserService {
    * @returns Utilisateur mis à jour
    */
   static async updateUser(id: string, userData: UpdateUserRequest): Promise<User> {
-    return await ApiService.put<User>(`/users/${id}`, userData);
+    return await ApiService.put<User>(`/users/${id}/`, userData);
   }
 
   /**
@@ -73,7 +73,7 @@ class UserService {
    * @returns Utilisateur supprimé
    */
   static async deleteUser(id: string): Promise<User> {
-    return await ApiService.delete<User>(`/users/${id}`);
+    return await ApiService.delete<User>(`/users/${id}/`);
   }
 
   /**
@@ -81,7 +81,7 @@ class UserService {
    * @returns Profil de l'utilisateur
    */
   static async getCurrentUserProfile(): Promise<User> {
-    return await ApiService.get<User>('/users/me');
+    return await ApiService.get<User>('/users/me/');
   }
 
   /**
