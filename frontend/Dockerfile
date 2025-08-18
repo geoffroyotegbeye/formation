@@ -22,7 +22,7 @@ WORKDIR /app
 RUN npm install -g serve
 
 # Copy built React app from build stage
-COPY --from=build /app/dist ./build
+COPY --from=build /app/dist ./dist
 
 # Set environment variables
 ENV PORT=3002
@@ -30,4 +30,4 @@ ENV PORT=3002
 EXPOSE 3002
 
 # Serve the React app
-CMD ["serve", "-s", "build", "-l", "3002"]
+CMD ["serve", "-s", "dist", "-l", "3002"]
