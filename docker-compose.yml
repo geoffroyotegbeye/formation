@@ -103,29 +103,57 @@ services:
       - traefik.http.routers.${STACK_NAME}-backend-http.middlewares=https-redirect
  
   frontend:
-    build:
-      context: ./frontend
-    image: frontend-akanni-solutions/nuxt:latest
+    image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
     restart: always
-    environment:
-      - NUXT_PUBLIC_API_URL=https://api.akanni.solutions
-      - VITE_API_URL=https://api.akanni.solutions
-      - APP_URL=https://akanni.solutions
-      - SERVER_URL=https://api.akanni.solutions
     networks:
       - traefik-public
+      - default
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=https://api.akanni.solutions
+        - NODE_ENV=production
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
       - traefik.constraint-label=traefik-public
-      - traefik.http.routers.${STACK_NAME}-frontend-http.rule=Host(`akanni.solutions`)
-      - traefik.http.routers.${STACK_NAME}-frontend-http.entrypoints=http
-      - traefik.http.routers.${STACK_NAME}-frontend-http.middlewares=https-redirect
-      - traefik.http.routers.${STACK_NAME}-frontend-https.rule=Host(`akanni.solutions`)
-      - traefik.http.routers.${STACK_NAME}-frontend-https.entrypoints=https
-      - traefik.http.routers.${STACK_NAME}-frontend-https.tls=true
-      - traefik.http.routers.${STACK_NAME}-frontend-https.tls.certresolver=le
-      - traefik.http.services.${STACK_NAME}-frontend.loadbalancer.server.port=3002
+
+      - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=3002
+
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=Host(`akanni.solutions`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.entrypoints=http
+
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.rule=Host(`akanni.solutions`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls.certresolver=le
+
+      # Enable redirection for HTTP and HTTPS
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   image: frontend-akanni-solutions/nuxt:latest
+  #   restart: always
+  #   environment:
+  #     - NUXT_PUBLIC_API_URL=https://api.akanni.solutions
+  #     - VITE_API_URL=https://api.akanni.solutions
+  #     - APP_URL=https://akanni.solutions
+  #     - SERVER_URL=https://api.akanni.solutions
+  #   networks:
+  #     - traefik-public
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.docker.network=traefik-public
+  #     - traefik.constraint-label=traefik-public
+  #     - traefik.http.routers.${STACK_NAME}-frontend-http.rule=Host(`akanni.solutions`)
+  #     - traefik.http.routers.${STACK_NAME}-frontend-http.entrypoints=http
+  #     - traefik.http.routers.${STACK_NAME}-frontend-http.middlewares=https-redirect
+  #     - traefik.http.routers.${STACK_NAME}-frontend-https.rule=Host(`akanni.solutions`)
+  #     - traefik.http.routers.${STACK_NAME}-frontend-https.entrypoints=https
+  #     - traefik.http.routers.${STACK_NAME}-frontend-https.tls=true
+  #     - traefik.http.routers.${STACK_NAME}-frontend-https.tls.certresolver=le
+  #     - traefik.http.services.${STACK_NAME}-frontend.loadbalancer.server.port=3002
 
 networks:
   traefik-public:
