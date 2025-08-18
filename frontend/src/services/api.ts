@@ -3,7 +3,7 @@ import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 
 // URL de base de l'API
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.akanni.solutions/api/v1';
 
 /**
  * Classe pour gérer les appels API authentifiés

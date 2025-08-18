@@ -103,7 +103,7 @@ services:
       - traefik.http.routers.formations-backend-https.tls.certresolver=le
       - traefik.http.routers.formations-backend-http.middlewares=https-redirect
  
-  frontend:
+  frontend: 
     build:
       context: ./frontend
     image: frontend-akanni-solutions/nuxt:latest
