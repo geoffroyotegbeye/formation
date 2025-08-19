@@ -2,7 +2,7 @@ services:
   mongo:
     image: mongo
     restart: always
-    container_name: mongo-docker
+    container_name: mongo-docker-${STACK_NAME}
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongoadmin
       - MONGO_INITDB_ROOT_PASSWORD=mongoadmin
@@ -30,7 +30,7 @@ services:
 
   mongo-express:
     image: mongo-express
-    container_name: mongo-express
+    container_name: mongo-express-${STACK_NAME}
     restart: always
     ports:
       - "28081:8081"
