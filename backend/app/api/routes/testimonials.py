@@ -25,7 +25,7 @@ def prepare_testimonial_response(testimonial):
 
 
 
-@router.get("/", response_model=List[TestimonialResponse])
+@router.get("", response_model=List[TestimonialResponse])
 async def get_testimonials(
     limit: int = Query(None, ge=1, description="Nombre maximum de témoignages à retourner")
 ):

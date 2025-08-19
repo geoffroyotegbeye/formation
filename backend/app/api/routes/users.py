@@ -11,7 +11,7 @@ from app.utils.model_helpers import prepare_mongodb_document, prepare_mongodb_do
 
 router = APIRouter(tags=["users"])
 
-@router.get("/")
+@router.get("")
 async def read_users(
     skip: int = 0, 
     limit: int = 100, 
