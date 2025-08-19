@@ -1,33 +1,23 @@
-# Build Stage 1
-FROM node:22-alpine AS build
+# Stage 0, "build-stage", based on Node.js, to build and compile the frontend
+FROM node:20 AS build-stage
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package.json package-lock.json ./
+COPY package*.json /app/
 
-# Install dependencies
-RUN npm ci
+RUN npm install
 
-# Copy the entire project
-COPY . ./
+COPY ./ /app/
 
-# Build the project
+ARG VITE_API_URL=${VITE_API_URL}
+
 RUN npm run build
 
-# Production Stage 2
-FROM node:22-alpine
-WORKDIR /app
 
-# Install serve package globally
-RUN npm install -g serve
+# Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
+FROM nginx:1
 
-# Copy built React app from build stage
-COPY --from=build /app/dist ./dist
+COPY --from=build-stage /app/dist/ /usr/share/nginx/html
 
-# Set environment variables
-ENV PORT=3002
-
-EXPOSE 3002
-
-# Serve the React app
-CMD ["serve", "-s", "dist", "-l", "3002"]
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx-backend-not-found.conf /etc/nginx/extra-conf.d/backend-not-found.conf
