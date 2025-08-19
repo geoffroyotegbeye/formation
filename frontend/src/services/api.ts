@@ -7,9 +7,9 @@ import Cookies from 'js-cookie';
 const API_URL = 'https://api.akanni.solutions/api/v1';
 
 // S'assurer que toutes les requêtes utilisent HTTPS
-if (typeof window !== 'undefined' && window.location.protocol === 'http:' && !window.location.hostname.includes('localhost')) {
-  window.location.href = window.location.href.replace('http:', 'https:');
-}
+// if (typeof window !== 'undefined' && window.location.protocol === 'http:' && !window.location.hostname.includes('localhost')) {
+//   window.location.href = window.location.href.replace('http:', 'https:');
+// }
  
 /**
  * Classe pour gérer les appels API authentifiés
