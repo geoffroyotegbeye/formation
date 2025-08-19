@@ -31,7 +31,7 @@ class ContactService {
    * @returns Liste des messages de contact
    */
   static async getAllContacts(): Promise<Contact[]> {
-    return await ApiService.get<Contact[]>('/contacts');
+    return await ApiService.get<Contact[]>('/contacts/');
   }
 
   /**
@@ -74,7 +74,7 @@ class ContactService {
    * @returns Message créé
    */
   static async createContact(contact: ContactCreate): Promise<Contact> {
-    return await ApiService.post<Contact>('/contacts', contact);
+    return await ApiService.post<Contact>('/contacts/', contact);
   }
 }
 

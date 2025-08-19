@@ -55,7 +55,7 @@ class ApplicationService {
    * @returns Liste des candidatures
    */
   static async getAllApplications(): Promise<Application[]> {
-    return await ApiService.get<Application[]>('/applications');
+    return await ApiService.get<Application[]>('/applications/');
   }
 
   /**
@@ -98,7 +98,7 @@ class ApplicationService {
    * @returns Candidature créée
    */
   static async createApplication(application: ApplicationCreate): Promise<Application> {
-    return await ApiService.post<Application>('/applications', application);
+    return await ApiService.post<Application>('/applications/', application);
   }
   
   /**

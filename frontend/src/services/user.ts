@@ -36,7 +36,7 @@ class UserService {
    * @returns Liste des utilisateurs
    */
   static async getAllUsers(): Promise<User[]> {
-    return await ApiService.get<User[]>('/users');
+    return await ApiService.get<User[]>('/users/');
   }
 
   /**
