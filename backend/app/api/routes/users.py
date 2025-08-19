@@ -64,7 +64,7 @@ async def create_user(
     result = prepare_mongodb_document(user)
     return result
 
-@router.get("/me")
+@router.get("/me/")
 async def read_user_me(current_user: User = Depends(get_current_active_user)):
     """
     Récupérer l'utilisateur connecté

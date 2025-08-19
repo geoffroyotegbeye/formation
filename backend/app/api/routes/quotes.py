@@ -17,7 +17,7 @@ async def create_quote(quote: Quote):
     return quote
 
 
-@router.get("/", response_model=List[Quote])
+@router.get("", response_model=List[Quote])
 async def get_quotes(
     skip: int = 0,
     limit: int = 100,
