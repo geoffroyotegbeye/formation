@@ -89,26 +89,46 @@ services:
       retries: 5
     build:
       context: ./backend
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.docker.network=traefik-public
+    #   - traefik.http.services.${STACK_NAME}-backend.loadbalancer.server.port=3003
+    #   - traefik.constraint-label=traefik-public
+
+    #   # Router HTTP (pour rediriger vers HTTPS)
+    #   - traefik.http.routers.${STACK_NAME}-backend-http.rule=Host(`api.akanni.solutions`)
+    #   - traefik.http.routers.${STACK_NAME}-backend-http.entrypoints=http
+    #   - traefik.http.routers.${STACK_NAME}-backend-http.middlewares=https-redirect
+
+    #   # Router HTTPS (SANS le middleware https-redirect)
+    #   - traefik.http.routers.${STACK_NAME}-backend-https.rule=Host(`api.akanni.solutions`)
+    #   - traefik.http.routers.${STACK_NAME}-backend-https.entrypoints=https
+    #   - traefik.http.routers.${STACK_NAME}-backend-https.tls=true
+    #   - traefik.http.routers.${STACK_NAME}-backend-https.tls.certresolver=le
+
+    #   # Définir le middleware de redirection
+    #   - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+    #   - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true 
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
       - traefik.http.services.${STACK_NAME}-backend.loadbalancer.server.port=3003
       - traefik.constraint-label=traefik-public
 
-      # Router HTTP (pour rediriger vers HTTPS)
+      # Définir le middleware de redirection AVANT de l'utiliser
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+
+      # Router HTTP - redirige vers HTTPS
       - traefik.http.routers.${STACK_NAME}-backend-http.rule=Host(`api.akanni.solutions`)
       - traefik.http.routers.${STACK_NAME}-backend-http.entrypoints=http
       - traefik.http.routers.${STACK_NAME}-backend-http.middlewares=https-redirect
 
-      # Router HTTPS (SANS le middleware https-redirect)
+      # Router HTTPS - sert le contenu (PAS de middleware de redirection ici)
       - traefik.http.routers.${STACK_NAME}-backend-https.rule=Host(`api.akanni.solutions`)
       - traefik.http.routers.${STACK_NAME}-backend-https.entrypoints=https
       - traefik.http.routers.${STACK_NAME}-backend-https.tls=true
       - traefik.http.routers.${STACK_NAME}-backend-https.tls.certresolver=le
-
-      # Définir le middleware de redirection
-      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true 
  
   frontend:
     image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
